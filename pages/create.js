@@ -58,6 +58,7 @@ export default function Create() {
 
   return (
     <div className="flex flex-col gap-y-8">
+      <p>You are logged in as {connectedAccount}</p>
       <form className="mt-8 flex flex-col gap-y-6">
         <div>
           <label

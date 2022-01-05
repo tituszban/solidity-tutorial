@@ -17,6 +17,8 @@ export default function MetaMaskAccountProvider({children}) {
       } else {
         alert('Please use Rinkeby network');
       }
+
+      window.ethereum.on("accountsChanged", () => window.location.reload());
     }
   }
   useEffect(() => setEthereumFromWindow(), [])

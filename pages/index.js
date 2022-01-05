@@ -69,6 +69,9 @@ export default function Home() {
         <PrimaryButton type="link" href="/create">
           Create a Keyboard!
         </PrimaryButton>
+        <p>
+          You are logged in as {connectedAccount}
+        </p>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-2 p-2">
           {keyboards.map(([kind, isPBT, filter, owner], i) => (
             <div key={i} className="relative">
