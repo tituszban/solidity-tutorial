@@ -9,6 +9,7 @@ export default function Home() {
   const [connectedAccount, setConnectedAccount] = useState(undefined);
   const [keyboards, setKeyboards] = useState([]);
   const [newKeyboard, setNewKeyboard] = useState("");
+  const [keyboardsLoading, setKeyboardsLoading] = useState(false);
 
   const contractAddress = "0x9e9d538F3979a1572955D563124432aaEe42f82A";
   const contractABI = abi.abi;
@@ -46,20 +47,25 @@ export default function Home() {
   };
 
   const getKeyboards = async () => {
-    if (!ethereum || !connectedAccount) {
-      return;
-    }
-    const provider = new ethers.providers.Web3Provider(ethereum);
-    const signer = provider.getSigner();
-    const keyboardsContract = new ethers.Contract(
-      contractAddress,
-      contractABI,
-      signer
-    );
+    if (ethereum && connectedAccount) {
+      setKeyboardsLoading(true);
+      try {
+        const provider = new ethers.providers.Web3Provider(ethereum);
+        const signer = provider.getSigner();
+        const keyboardsContract = new ethers.Contract(
+          contractAddress,
+          contractABI,
+          signer
+        );
 
-    const keyboards = await keyboardsContract.getKeyboards();
-    console.log("Retrieved keyboards...", keyboards);
-    setKeyboards(keyboards);
+        const keyboards = await keyboardsContract.getKeyboards();
+        console.log("Retrieved keyboards...", keyboards);
+
+        setKeyboards(keyboards);
+      } finally {
+        setKeyboardsLoading(false);
+      }
+    }
   };
   useEffect(() => getKeyboards(), [connectedAccount]);
 
@@ -112,6 +118,17 @@ export default function Home() {
             <Keyboard key={i} kind={kind} isPBT={isPBT} filter={filter} />
           ))}
         </div>
+      </div>
+    );
+  }
+
+  if (keyboardsLoading) {
+    return (
+      <div className="flex flex-col gap-4">
+        <PrimaryButton type="link" href="/create">
+          Create a Keyboard!
+        </PrimaryButton>
+        <p>Loading Keyboards...</p>
       </div>
     );
   }
